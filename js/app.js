@@ -116,14 +116,14 @@ class Workout {
 class App {
   constructor() {
     this._tracker = new CalorieTracker();
-    document.getElementById('meal-form').addEventListener('submit', this._newMeal.bind(this));
-    document.getElementById('workout-form').addEventListener('submit', this._newWorkout.bind(this));  
+    document.getElementById('meal-form').addEventListener('submit', this._newItem.bind(this, 'meal'));
+    document.getElementById('workout-form').addEventListener('submit', this._newItem.bind(this, 'workout'));  
   }
 
-  _newMeal(e) {
+  _newItem(type, e) {
     e.preventDefault();
-    const name = document.getElementById('meal-name');
-    const calories = document.getElementById('meal-calories');
+    const name = document.getElementById(`${type}-name`);
+    const calories = document.getElementById(`${type}-calories`);
 
     // Validate Inputs
     if(name.value === '' || calories.value === '') {
@@ -131,49 +131,27 @@ class App {
       return;
     }
 
-    // Create new meal
-    const meal = new Meal(name.value, +calories.value); // +calories.value is just another way of converting from a string to a number
-    // Call the add meal method from the tracker class and add the new meal
-    this._tracker.addMeal(meal);
-
-    // Clear Forms
-    name.value = '';
-    calories.value = '';
-
-    // Close meal form
-    const collapseMeal = document.getElementById('collapse-meal');
-    const bsCollapse = new bootstrap.Collapse(collapseMeal, {
-      toggle: true
-    })
-    // console.log(this);
-  }
-
-  _newWorkout(e) {
-    e.preventDefault();
-    const name = document.getElementById('workout-name');
-    const calories = document.getElementById('workout-calories');
-
-    // Validate Inputs
-    if(name.value === '' || calories.value === '') {
-      alert('Please fill in all fields');
-      return;
+    if (type === 'meal') {
+      // Create new meal
+      const meal = new Meal(name.value, +calories.value); // +calories.value is just another way of converting from a string to a number
+      // Call the add meal method from the tracker class and add the new meal
+      this._tracker.addMeal(meal);
+    } else {
+       // Create new workout
+      const workout = new Workout(name.value, +calories.value);
+      // Call the add workout method from the tracker class and add the new workout
+      this._tracker.addWorkout(workout);
     }
 
-    // Create new meal
-    const workout = new Workout(name.value, +calories.value);
-    // Call the add workout method from the tracker class and add the new workout
-    this._tracker.addWorkout(workout);
-
     // Clear Forms
     name.value = '';
     calories.value = '';
 
-    // Close workout form
-    const collapseWorkout = document.getElementById('collapse-workout');
-    const bsCollapse = new bootstrap.Collapse(collapseWorkout, {
+    // Close meal or workout form
+    const collapseForm = document.getElementById(`collapse-${type}`);
+    const bsCollapse = new bootstrap.Collapse(collapseForm, {
       toggle: true
     })
-
     // console.log(this);
   }
 }
