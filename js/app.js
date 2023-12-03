@@ -4,7 +4,7 @@ class CalorieTracker {
     this._calorieLimit = Storage.getCalorieLimit();
     this._totalCalories = Storage.getTotalCalories(0);
     this._meals = Storage.getMeals();
-    this._workouts = [];
+    this._workouts = Storage.getWorkouts();
     this._displayCalorieLimit();
     this._displayCaloriesTotal();
     this._displayCaloriesConsumed();
@@ -29,6 +29,7 @@ class CalorieTracker {
     this._workouts.push(workout);
     this._totalCalories -= workout.calories;
     Storage.updateTotalCalories(this._totalCalories);
+    Storage.saveWorkout(workout);
     this._displayNewWorkout(workout);
     this._render();
   }
@@ -74,6 +75,7 @@ class CalorieTracker {
   // Load Items
   loadItems() {
     this._meals.forEach(meal => this._displayNewMeal(meal));
+    // this._workouts.forEach(workout => this._displayNewWorkout(workout));
   }
 
   // PRIVATE METHODS
@@ -99,8 +101,8 @@ class CalorieTracker {
   // Display Calories Burned
   _displayCaloriesBurned() {
     const caloriesBurnedEl = document.getElementById('calories-burned');
-    const burned = this._workouts.reduce((total, workout) => total + workout.calories, 0);
-    caloriesBurnedEl.innerHTML = burned;
+    // const burned = this._workouts.reduce((total, workout) => total + workout.calories, 0);
+    // caloriesBurnedEl.innerHTML = burned;
   }
 
    // Display Calories Remaining
@@ -254,6 +256,38 @@ class Storage {
     meals.push(meal);
     localStorage.setItem('meals', JSON.stringify(meals));
   }
+
+  // static getWorkouts() {
+  //   let workouts;
+  //   if(localStorage.getItem('workouts') === null) {
+  //     workouts = [];
+  //   } else {
+  //     workouts = JSON.parse(localStorage.getItem('workouts'));
+  //   }
+  //   return workouts;
+  // }
+
+  static getWorkouts() {
+    let workouts;
+    if(localStorage.getItem('workouts') === null) {
+      workouts = [];
+    } else {
+      workouts = JSON.parse(localStorage.getItem('workouts'));
+    }
+    return workouts;
+  }
+
+  static saveWorkout(workout) {
+    const workouts = Storage.getworkouts();
+    workouts.push(workout);
+    localStorage.setItem('workouts', JSON.stringify(workouts));
+  }
+
+  // static saveWorkout(workout) {
+  //   const workouts = Storage.getWorkouts();
+  //   workouts.push(workout);
+  //   localStorage.setItem('workouts', JSON.stringify(workout));
+  // }
 }
 
 // App Constructor
@@ -273,6 +307,7 @@ class App {
     document.getElementById('filter-workouts').addEventListener('keyup', this._filterItems.bind(this, 'workout'));
     document.getElementById('reset').addEventListener('click', this._reset.bind(this));
     document.getElementById('limit-form').addEventListener('submit', this._setLimit.bind(this));
+    console.log(this._tracker._workouts);
   }
 
   _newItem(type, e) {
