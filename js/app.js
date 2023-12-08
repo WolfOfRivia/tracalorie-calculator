@@ -16,6 +16,7 @@ class CalorieTracker {
   // PUBLIC METHODS/API
   // add meal and add to calories
   addMeal(meal) {
+    // console.log(this._meals);
     this._meals.push(meal);
     this._totalCalories += meal.calories;
     Storage.updateTotalCalories(this._totalCalories);
@@ -26,6 +27,7 @@ class CalorieTracker {
 
   // add workout and burn(remove) calories
   addWorkout(workout) {
+    console.log(this._workouts);
     this._workouts.push(workout);
     this._totalCalories -= workout.calories;
     Storage.updateTotalCalories(this._totalCalories);
@@ -75,7 +77,7 @@ class CalorieTracker {
   // Load Items
   loadItems() {
     this._meals.forEach(meal => this._displayNewMeal(meal));
-    // this._workouts.forEach(workout => this._displayNewWorkout(workout));
+    this._workouts.forEach(workout => this._displayNewWorkout(workout));
   }
 
   // PRIVATE METHODS
@@ -257,16 +259,6 @@ class Storage {
     localStorage.setItem('meals', JSON.stringify(meals));
   }
 
-  // static getWorkouts() {
-  //   let workouts;
-  //   if(localStorage.getItem('workouts') === null) {
-  //     workouts = [];
-  //   } else {
-  //     workouts = JSON.parse(localStorage.getItem('workouts'));
-  //   }
-  //   return workouts;
-  // }
-
   static getWorkouts() {
     let workouts;
     if(localStorage.getItem('workouts') === null) {
@@ -278,16 +270,10 @@ class Storage {
   }
 
   static saveWorkout(workout) {
-    const workouts = Storage.getworkouts();
+    const workouts = Storage.getWorkouts();
     workouts.push(workout);
     localStorage.setItem('workouts', JSON.stringify(workouts));
   }
-
-  // static saveWorkout(workout) {
-  //   const workouts = Storage.getWorkouts();
-  //   workouts.push(workout);
-  //   localStorage.setItem('workouts', JSON.stringify(workout));
-  // }
 }
 
 // App Constructor
@@ -307,7 +293,7 @@ class App {
     document.getElementById('filter-workouts').addEventListener('keyup', this._filterItems.bind(this, 'workout'));
     document.getElementById('reset').addEventListener('click', this._reset.bind(this));
     document.getElementById('limit-form').addEventListener('submit', this._setLimit.bind(this));
-    console.log(this._tracker._workouts);
+    console.log(this._tracker);
   }
 
   _newItem(type, e) {
