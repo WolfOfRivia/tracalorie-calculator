@@ -11,6 +11,8 @@ class CalorieTracker {
     this._displayCaloriesBurned();
     this._displayCaloriesRemaining();
     this._displayCaloriesProgress();
+
+    document.getElementById('limit').value = this._calorieLimit;
   }
 
   // PUBLIC METHODS/API
@@ -65,6 +67,7 @@ class CalorieTracker {
     this._totalCalories = 0;
     this._meals = [];
     this._workouts = [];
+    Storage.clearAll();
     this._render();
   }
 
@@ -295,6 +298,15 @@ class Storage {
       }
     })
     localStorage.setItem('workouts', JSON.stringify(workouts));
+  }
+
+  static clearAll() {
+    localStorage.removeItem('totalCalories');
+    localStorage.removeItem('meals');
+    localStorage.removeItem('workouts');
+    // This also would have worked, but instead we removed individual items because we wanted to keep the set daily calorie limit
+    // Use localStorage.clear() if you just want to clear everything
+    // localStorage.clear()
   }
 }
 
